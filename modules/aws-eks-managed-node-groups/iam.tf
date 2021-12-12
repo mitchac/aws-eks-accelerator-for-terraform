@@ -33,6 +33,20 @@ resource "aws_iam_role_policy_attachment" "managed_ng_AmazonEC2ContainerRegistry
   role       = aws_iam_role.managed_ng.name
 }
 
+# s3 bucket access
+
+resource "aws_iam_policy" "s3_bucket_access" {
+  name        = "${var.eks_cluster_name}-${local.managed_node_group["node_group_name"]}-s3a"
+  description = "IAM policy for s3 bucket access"
+  path        = var.path
+  policy      = data.aws_iam_policy_document.s3_bucket_access.json
+}
+
+resource "aws_iam_role_policy_attachment" "s3_bucket_access" {
+  policy_arn = aws_iam_policy.s3_bucket_access.arn
+  role       = aws_iam_role.managed_ng.name
+}
+
 # Cluster Autoscaler
 resource "aws_iam_policy" "cluster_autoscaler" {
   name        = "${var.eks_cluster_name}-${local.managed_node_group["node_group_name"]}-ca"
