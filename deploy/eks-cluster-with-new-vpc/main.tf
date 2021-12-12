@@ -1,4 +1,10 @@
 
+provider "aws" {
+  region = "us-east-2"
+  shared_credentials_file = "/home/mitchac/.aws/credentials"
+  profile                 = "cmr"
+}
+
 terraform {
   required_version = ">= 1.0.1"
 
@@ -16,11 +22,6 @@ terraform {
       version = ">= 2.4.1"
     }
   }
-}
-
-provider "aws" {
-  region = data.aws_region.current.id
-  alias  = "default"
 }
 
 terraform {
@@ -96,31 +97,29 @@ module "aws-eks-accelerator-for-terraform" {
   # EKS MANAGED NODE GROUPS
   managed_node_groups = {
     mg_4 = {
-      node_group_name = "managed-ondemand"
-      instance_types  = ["m4.large"]
+      node_group_name = "managed-ondemand22"
+      instance_types  = ["c5.large"]
       subnet_ids      = module.aws_vpc.private_subnets
-    }
+      desired_size    = 1
+      max_size        = 3
+      min_size        = 1
+        }
+    sp_c5 = {
+      node_group_name = "workflow-jobs"
+      instance_types  = ["c5.4xlarge"]
+      subnet_ids      = module.aws_vpc.private_subnets
+      desired_size    = 0
+      max_size        = 6
+      min_size        = 0
+      capacity_type  = "SPOT"
+      disk_size      = 300
+      k8s_taints      = [{key = "reserved-pool", value = "true", effect = "NO_SCHEDULE"}]
+      k8s_labels = {
+        purpose = "workflow-jobs"
+          }
+        }
   }
 
-  # FARGATE
-  fargate_profiles = {
-    default = {
-      fargate_profile_name = "default"
-      fargate_profile_namespaces = [
-        {
-          namespace = "default"
-          k8s_labels = {
-            Environment = "preprod"
-            Zone        = "dev"
-            env         = "fargate"
-          }
-      }]
-      subnet_ids = module.aws_vpc.private_subnets
-      additional_tags = {
-        ExtraTag = "Fargate"
-      }
-    },
-  }
   #ADDON
   aws_lb_ingress_controller_enable = true
   metrics_server_enable            = true
