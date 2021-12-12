@@ -18,6 +18,18 @@ data "aws_iam_policy_document" "managed_ng_assume_role_policy" {
   }
 }
 
+data "aws_iam_policy_document" "s3_bucket_access" {
+  statement {
+    sid       = ""
+    effect    = "Allow"
+    resources = [
+        "arn:aws:s3:::batch-artifact-repository-401305384268",
+        "arn:aws:s3:::batch-artifact-repository-401305384268/*"
+        ]
+    actions = ["s3:*"]
+  }
+}
+
 data "aws_iam_policy_document" "cluster_autoscaler" {
   statement {
     sid       = ""
@@ -50,3 +62,4 @@ data "aws_iam_policy_document" "cwlogs" {
     ]
   }
 }
+~
