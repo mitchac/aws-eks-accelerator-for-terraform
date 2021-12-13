@@ -1,3 +1,4 @@
+
 provider "aws" {
   region = "us-east-2"
   shared_credentials_file = "/home/mitchac/.aws/credentials"
@@ -99,7 +100,7 @@ module "aws-eks-accelerator-for-terraform" {
     mg_4 = {
       node_group_name = "managed-ondemand22"
       instance_types  = ["c5.large"]
-      subnet_ids      = module.aws_vpc.public_subnets
+      subnet_ids      = module.aws_vpc.private_subnets
       desired_size    = 1
       max_size        = 3
       min_size        = 1
@@ -107,7 +108,7 @@ module "aws-eks-accelerator-for-terraform" {
     sp_c5 = {
       node_group_name = "workflow-jobs"
       instance_types  = ["c5.4xlarge"]
-      subnet_ids      = module.aws_vpc.public_subnets
+      subnet_ids      = module.aws_vpc.private_subnets
       desired_size    = 0
       max_size        = 6
       min_size        = 0
