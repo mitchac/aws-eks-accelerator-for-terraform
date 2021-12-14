@@ -108,9 +108,9 @@ module "aws-eks-accelerator-for-terraform" {
       node_group_name = "workflow-jobs"
       instance_types  = ["c5.4xlarge"]
       subnet_ids      = module.aws_vpc.public_subnets
-      desired_size    = 0
+      desired_size    = 1
       max_size        = 6
-      min_size        = 0
+      min_size        = 1
       capacity_type  = "SPOT"
       disk_size      = 300
       k8s_taints      = [{key = "reserved-pool", value = "true", effect = "NO_SCHEDULE"}]

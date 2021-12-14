@@ -23,7 +23,9 @@ data "aws_iam_policy_document" "s3_bucket_access" {
     effect    = "Allow"
     resources = [
         "arn:aws:s3:::batch-artifact-repository-401305384268",
-        "arn:aws:s3:::batch-artifact-repository-401305384268/*"
+        "arn:aws:s3:::batch-artifact-repository-401305384268/*",
+        "arn:aws:s3:::singlem-results-us-east-2",
+        "arn:aws:s3:::singlem-results-us-east-2/*"
         ]
     actions = ["s3:*"]
   }
