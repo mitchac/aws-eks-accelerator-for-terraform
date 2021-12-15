@@ -104,13 +104,27 @@ module "aws-eks-accelerator-for-terraform" {
       max_size        = 3
       min_size        = 1
         }
-    sp_c5 = {
-      node_group_name = "workflow-jobs"
-      instance_types  = ["c5.4xlarge"]
+    wj8 = {
+      node_group_name = "workflow-jobs-8cpu"
+      instance_types  = ["c4.2xlarge","c5.2xlarge","c6i.2xlarge"]
       subnet_ids      = module.aws_vpc.public_subnets
       desired_size    = 1
-      max_size        = 6
+      max_size        = 8
       min_size        = 1
+      capacity_type  = "SPOT"
+      disk_size      = 300
+      k8s_taints      = [{key = "reserved-pool", value = "true", effect = "NO_SCHEDULE"}]
+      k8s_labels = {
+        purpose = "workflow-jobs"
+          }
+        }
+    wj16 = {  
+      node_group_name = "workflow-jobs-16cpu"
+      instance_types  = ["c4.4xlarge","c5.4xlarge","c6i.4xlarge"]
+      subnet_ids      = module.aws_vpc.public_subnets
+      desired_size    = 1  
+      max_size        = 4
+      min_size        = 1    
       capacity_type  = "SPOT"
       disk_size      = 300
       k8s_taints      = [{key = "reserved-pool", value = "true", effect = "NO_SCHEDULE"}]
