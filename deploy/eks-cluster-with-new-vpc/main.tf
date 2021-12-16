@@ -34,8 +34,8 @@ data "aws_region" "current" {}
 data "aws_availability_zones" "available" {}
 
 locals {
-  tenant      = "aws001"  # AWS account name or unique id for tenant
-  environment = "preprod" # Environment area eg., preprod or prod
+  tenant      = "cmr"  # AWS account name or unique id for tenant
+  environment = "moreips" # Environment area eg., preprod or prod
   zone        = "dev"     # Environment with in one sub_tenant or business unit
 
   kubernetes_version = "1.21"
@@ -55,8 +55,8 @@ module "aws_vpc" {
   cidr = local.vpc_cidr
   azs  = data.aws_availability_zones.available.names
 
-  public_subnets  = [for k, v in data.aws_availability_zones.available.names : cidrsubnet(local.vpc_cidr, 8, k)]
-  private_subnets = [for k, v in data.aws_availability_zones.available.names : cidrsubnet(local.vpc_cidr, 8, k + 10)]
+  public_subnets  = [for k, v in data.aws_availability_zones.available.names : cidrsubnet(local.vpc_cidr, 6, k)]
+  private_subnets = [for k, v in data.aws_availability_zones.available.names : cidrsubnet(local.vpc_cidr, 8, k + 20)]
 
   enable_nat_gateway   = true
   create_igw           = true
@@ -109,7 +109,7 @@ module "aws-eks-accelerator-for-terraform" {
       instance_types  = ["c4.2xlarge","c5.2xlarge","c6i.2xlarge"]
       subnet_ids      = module.aws_vpc.public_subnets
       desired_size    = 1
-      max_size        = 8
+      max_size        = 30
       min_size        = 1
       capacity_type  = "SPOT"
       disk_size      = 300
@@ -123,7 +123,7 @@ module "aws-eks-accelerator-for-terraform" {
       instance_types  = ["c4.4xlarge","c5.4xlarge","c6i.4xlarge"]
       subnet_ids      = module.aws_vpc.public_subnets
       desired_size    = 1  
-      max_size        = 4
+      max_size        = 20
       min_size        = 1    
       capacity_type  = "SPOT"
       disk_size      = 300
